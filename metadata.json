@@ -1,0 +1,5 @@
+{
+  "name": "GlucoTrack AI",
+  "description": "A sophisticated blood glucose tracking application that provides instant range classification, historical data visualization, and AI-powered insights for diabetes management.",
+  "requestFramePermissions": []
+}
