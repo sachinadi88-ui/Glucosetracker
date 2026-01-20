@@ -4,7 +4,13 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   define: {
-    // Vite requires env variables to be stringified for the define plugin
+    // This allows process.env.API_KEY to work in the frontend code
+    // when deployed to Vercel (where it is set in the dashboard).
     'process.env.API_KEY': JSON.stringify(process.env.API_KEY || '')
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'esbuild',
   }
 });
