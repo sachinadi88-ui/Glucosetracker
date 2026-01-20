@@ -197,7 +197,7 @@ const App: React.FC = () => {
         <p className="text-[11px] text-slate-400 max-w-2xl mx-auto leading-relaxed italic">
           GlucoTrack AI is for reference only. Do not make medical decisions based on this app. Always consult with a licensed healthcare professional.
         </p>
-        <p className="mt-8 text-[10px] font-black text-slate-300 uppercase tracking-widest">&copy; 2025 GLUCOTRACK AI SYSTEMS</p>
+        <p className="mt-8 text-[10px] font-black text-slate-300 uppercase tracking-widest">&copy; 2025 GLUCOTRACKER by SACHIN ADI</p>
       </footer>
     </div>
   );
