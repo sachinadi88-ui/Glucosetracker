@@ -1,15 +1,10 @@
 import { GoogleGenAI } from "@google/genai";
 import { GlucoseEntry } from "../types";
 
-export const getGlucoseInsights = async (entries: GlucoseEntry[]) => {
-  // Use the defined process.env.API_KEY from vite.config.ts
-  const apiKey = process.env.API_KEY;
-  
-  if (!apiKey) {
-    throw new Error("API Key is missing. Please ensure it's provided in your environment.");
-  }
-
-  const ai = new GoogleGenAI({ apiKey });
+export const getGlucoseInsights = async (entries: GlucoseEntry[]): Promise<string> => {
+  // Initialize GoogleGenAI directly using process.env.API_KEY as per the world-class guidelines.
+  // The API key is injected by Vite's define plugin during the build process.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
   
   const recentData = entries.slice(-10).map(e => ({
     val: e.value,
@@ -32,11 +27,14 @@ export const getGlucoseInsights = async (entries: GlucoseEntry[]) => {
   `;
 
   try {
+    // Call generateContent using the correct model and prompt structure.
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
     });
-    return response.text;
+    
+    // Access the text property directly (not a method call) as specified in the guidelines.
+    return response.text || '';
   } catch (error) {
     console.error("Gemini Insights Error:", error);
     throw error;
