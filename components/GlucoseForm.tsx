@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
-import { MealStatus, GlucoseEntry, GlucoseLevel } from '../types';
+import { MealStatus, GlucoseEntry } from '../types';
 import { getGlucoseLevel } from '../constants';
+import { Plus, ChevronRight, Hash } from 'lucide-react';
 
 interface GlucoseFormProps {
   onAddEntry: (entry: GlucoseEntry) => void;
@@ -18,7 +18,7 @@ export const GlucoseForm: React.FC<GlucoseFormProps> = ({ onAddEntry }) => {
 
     const level = getGlucoseLevel(glucoseValue, status);
     const newEntry: GlucoseEntry = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: Math.random().toString(36).substring(2, 11),
       value: glucoseValue,
       timestamp: new Date(),
       mealStatus: status,
@@ -30,42 +30,62 @@ export const GlucoseForm: React.FC<GlucoseFormProps> = ({ onAddEntry }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-      <h2 className="text-xl font-semibold mb-4 text-slate-800">Add New Reading</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="bg-white p-8 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-100 ring-1 ring-slate-100 relative">
+      <div className="flex items-center gap-3 mb-10">
+        <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-xl">
+          <Plus size={22} />
+        </div>
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">
-            Glucose Value (mg/dL)
+          <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">New Log</h2>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Entry Panel</p>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div>
+          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
+            Measurement (mg/dL)
           </label>
-          <input
-            type="number"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder="e.g., 95"
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-            required
-            min="1"
-            max="1000"
-          />
+          <div className="group relative">
+             <input
+              type="number"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="000"
+              className="w-full pl-6 pr-20 py-6 bg-slate-50 border-2 border-slate-50 rounded-2xl text-4xl font-black text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 focus:shadow-inner outline-none transition-all placeholder:text-slate-200"
+              required
+              min="1"
+              max="999"
+            />
+            <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col items-center">
+              <span className="text-xs font-black text-slate-300 uppercase tracking-tighter">mg</span>
+              <div className="h-px w-4 bg-slate-200 my-0.5"></div>
+              <span className="text-xs font-black text-slate-300 uppercase tracking-tighter">dL</span>
+            </div>
+          </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">
-            Reading Type
+          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
+            Temporal State
           </label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 gap-3">
             {(Object.keys(MealStatus) as Array<keyof typeof MealStatus>).map((s) => (
               <button
                 key={s}
                 type="button"
                 onClick={() => setStatus(MealStatus[s])}
-                className={`px-3 py-2 text-xs font-medium rounded-lg border transition-all ${
+                className={`px-6 py-4 text-xs font-bold rounded-2xl border-2 transition-all flex items-center justify-between group ${
                   status === MealStatus[s]
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'bg-white text-slate-600 border-slate-300 hover:border-blue-300'
+                    ? 'bg-slate-900 text-white border-slate-900 shadow-xl shadow-slate-200'
+                    : 'bg-white text-slate-600 border-slate-100 hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
-                {s.replace('_', ' ')}
+                <div className="flex items-center gap-3">
+                   <div className={`w-2 h-2 rounded-full ${status === MealStatus[s] ? 'bg-indigo-400' : 'bg-slate-200'}`}></div>
+                   <span className="uppercase tracking-widest font-black text-[10px]">{s.replace('_', ' ')}</span>
+                </div>
+                <ChevronRight size={14} className={`${status === MealStatus[s] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'} transition-all`} />
               </button>
             ))}
           </div>
@@ -73,9 +93,12 @@ export const GlucoseForm: React.FC<GlucoseFormProps> = ({ onAddEntry }) => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors shadow-md shadow-blue-100"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-6 rounded-2xl transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-3 active:scale-[0.98] group"
         >
-          Track Reading
+          <span className="text-sm uppercase tracking-[0.2em]">Record Reading</span>
+          <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30">
+            <Plus size={16} />
+          </div>
         </button>
       </form>
     </div>

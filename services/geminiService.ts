@@ -1,11 +1,17 @@
-
 import { GoogleGenAI } from "@google/genai";
 import { GlucoseEntry } from "../types";
 
 export const getGlucoseInsights = async (entries: GlucoseEntry[]) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  // Use the defined process.env.API_KEY from vite.config.ts
+  const apiKey = process.env.API_KEY;
   
-  const recentData = entries.slice(-5).map(e => ({
+  if (!apiKey) {
+    throw new Error("API Key is missing. Please ensure it's provided in your environment.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+  
+  const recentData = entries.slice(-10).map(e => ({
     val: e.value,
     status: e.mealStatus,
     level: e.level,
@@ -13,15 +19,16 @@ export const getGlucoseInsights = async (entries: GlucoseEntry[]) => {
   }));
 
   const prompt = `
-    Analyze the following recent blood glucose readings (mg/dL) for an individual:
+    Analyze these blood glucose readings (mg/dL) for an individual:
     ${JSON.stringify(recentData)}
     
-    Provide a concise analysis (under 150 words) including:
-    1. Overall trend observation.
-    2. Two actionable health tips based on these values.
-    3. A clear medical disclaimer stating this is not professional medical advice.
-    
-    Format the response with Markdown for readability.
+    Instructions:
+    - Provide a short, professional trend analysis.
+    - Give exactly 3 actionable, evidence-based health tips.
+    - Use bullet points.
+    - You MUST include this specific text at the end: "DISCLAIMER: This is an AI-generated summary for educational purposes. This is not medical advice. Consult a doctor for personalized care."
+    - Be encouraging but cautious.
+    - Maximum length: 180 words.
   `;
 
   try {
@@ -32,6 +39,6 @@ export const getGlucoseInsights = async (entries: GlucoseEntry[]) => {
     return response.text;
   } catch (error) {
     console.error("Gemini Insights Error:", error);
-    return "Unable to generate insights at this time. Please consult your physician.";
+    throw error;
   }
 };
